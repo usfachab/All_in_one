@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  all:
+    container_name: inception
+    build: .
+    image: inceptioni
+    ports:
+      - 8080:80
+    volumes:
+      - nginx/config/nginx.conf:/etc/nginx/nginx.conf
+      - wp:/var/www/wordpress
+    restart: unless-stopped
+
+
