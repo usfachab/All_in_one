@@ -19,8 +19,8 @@ services:
     restart: unless-stopped
 # -------------------------- wordpress -------------------------- #
   wordpress:
-    # depends_on:
-    #   - mariadb
+    depends_on:
+      - mariadb
     build: ./requirements/wordpress/
     container_name: wordpress
     image: wordpressi
@@ -32,12 +32,11 @@ services:
       - ./requirements/wordpress/config/php-fpm.conf:/etc/php82/php-fpm.d/www.conf
       - ./requirements/wordpress/config/wp-config.php:/var/www/wordpress/wp-config.php
     restart: unless-stopped
-    env_file: .env
     environment:
-      - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_USER=$MYSQL_USER
-      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
-      - WORDPRESS_DB_NAME=wordpress
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: wp
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: secret
 # -------------------------- mariadb --------------------------- #
   mariadb:
     build: ./requirements/mariadb/
@@ -46,14 +45,21 @@ services:
     hostname: mariadb
     networks:
       - inception
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: wp
+      MYSQL_USER: wp
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    command: "/startup"
     volumes:
-      - ./requirements/mariadb/config/my.conf:/etc/my.conf
+      - maria:/var/lib/mysql
 # ----------------------- shared network ----------------------- #
 networks:
   inception:
-    name: inception
     driver: bridge
 
 volumes:
   wp:
-    name: wp
+  maria:

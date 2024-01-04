@@ -1,0 +1,15 @@
+#!/bin/ash
+
+# set -m
+
+nginx -g "daemon off;" &
+
+/usr/sbin/php-fpm81 --nodaemonize &
+
+mariadbd --user=root
+
+# mysql -e "CREATE DATABASE db;"
+# mysql -e "GRANT ALL PRIVILEGES ON db.* TO user@localhost IDENTIFIED BY \"password\";" && \
+# mysql -e "FLUSH PRIVILEGES;"
+
+fg %1
