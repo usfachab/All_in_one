@@ -6,9 +6,9 @@ services:
     build: .
     image: inceptioni
     ports:
-      - 8080:80
+      - 3000:80
     volumes:
-      - ./nginx/index.php:/var/www/localhost/htdocs/index.php
+      # - ./nginx/index.php:/var/www/localhost/htdocs/index.php
       - ./nginx/server.conf:/etc/nginx/http.d/default.conf
       - ./php-fpm/www.conf:/etc/php81/php-fpm.d/www.conf
       - ./wordpress/wp-config.php:/var/www/wordpress/wp-config.php

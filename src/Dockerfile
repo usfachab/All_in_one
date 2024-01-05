@@ -35,7 +35,7 @@ ENV MYSQL_DATABASE=db
 ENV MYSQL_USER=user
 ENV MYSQL_PASSWORD=password
 
-RUN sed -i "s|.*bind-address\s*=.*|bind-address=127.0.0.1|g" /etc/my.cnf
-RUN sed -i "s|.*bind-address\s*=.*|bind-address=127.0.0.1|g" /etc/my.cnf.d/mariadb-server.cnf
+RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf
+RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
 
 CMD [ "/bin/ash", "/startup" ]

@@ -26,7 +26,7 @@ define( 'DB_NAME', 'db' );
 define( 'DB_USER', 'user' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'user' );
+define( 'DB_PASSWORD', 'password' );
 
 /** Database hostname */
 define( 'DB_HOST', 'localhost:3306' );
@@ -36,6 +36,13 @@ define( 'DB_CHARSET', 'utf8' );
 
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
+
+// define('WP_INSTALLING', true); // Add this line to indicate installation mode
+
+// // Set the default admin user details
+// define('ADMIN_USER', 'admin');
+// define('ADMIN_PASSWORD', 'admin');
+// define('ADMIN_EMAIL', 'usfachb@gmail.com');
 
 /**#@+
  * Authentication unique keys and salts.
