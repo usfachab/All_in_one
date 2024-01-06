@@ -1,21 +1,13 @@
 #!/bin/sh
-
 set -e
 
 wp core download --path=/var/www/wordpress --force
-
-# wp config create --dbname=db --dbuser=user --dbpass=password --force
-
-# echo "define('DB_SOCKET', 'mariadb:3306');" >> /var/www/wordpress/wp-config.php
-
-
 
 WP_URL="http://localhost:8888"
 WP_TITLE="WORDPRESS"
 ADMIN_USER="admin"
 ADMIN_PASSWORD="admin"
 ADMIN_EMAIL="admin@example.com"
-
 
 wp core install \
     --url="$WP_URL" \
@@ -32,7 +24,5 @@ find /var/www/ -type d -exec chmod 755 {} \;
 find /var/www/ -type f -exec chmod 644 {} \;
 
 chown -R www-data:www-data /var/www/
-
-echo "OK"
 
 exec $@

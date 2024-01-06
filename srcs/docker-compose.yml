@@ -9,7 +9,6 @@ services:
     container_name: nginx
     ports:
       - 8888:80
-    hostname: nginx
     networks:
       - inception
     volumes:
@@ -22,33 +21,28 @@ services:
       - db
     build: ./requirements/wordpress/
     container_name: wordpress
-    hostname: wordpress
     networks:
       - inception
     volumes:
       - wp:/var/www/wordpress
       - ./requirements/wordpress/config/php-fpm.conf:/etc/php81/php-fpm.d/www.conf
       - ./requirements/wordpress/config/wp-config.php:/var/www/wordpress/wp-config.php
-    # restart: unless-stopped
-    environment:
-      WORDPRESS_DB_HOST: mariadb
-      WORDPRESS_DB_USER: user
-      WORDPRESS_DB_PASSWORD: password
-      WORDPRESS_DB_NAME: db
+    restart: unless-stopped
 # -------------------------- mariadb --------------------------- #
   db:
-    build: ./requirements/mariadb/
+    build:
+      context: ./requirements/mariadb/
+      args:
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${DB_NAME}
+        MYSQL_USER: ${DB_USER}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
     container_name: mariadb
-    hostname: mariadb
     networks:
       - inception
-    environment:
-      MYSQL_ROOT_PASSWORD: toor
-      MYSQL_DATABASE: db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
     volumes:
       - database:/var/lib/mysql
+    restart: unless-stopped
 # ----------------------- shared network ----------------------- #
 networks:
   inception:
