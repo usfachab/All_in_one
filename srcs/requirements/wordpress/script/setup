@@ -3,15 +3,12 @@ set -e
 
 wp core download --path=/var/www/wordpress --force
 
-WP_URL="http://localhost:8888"
-WP_TITLE="WORDPRESS"
-ADMIN_USER="admin"
-ADMIN_PASSWORD="admin"
-ADMIN_EMAIL="admin@example.com"
+wp config create --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASSWORD \
+				--dbhost=$DB_HOST --dbprefix=utf8 --force
 
 wp core install \
-    --url="$WP_URL" \
-    --title="$WP_TITLE" \
+    --url="$URL" \
+    --title="$TITLE" \
     --admin_user="$ADMIN_USER" \
     --admin_password="$ADMIN_PASSWORD" \
     --admin_email="$ADMIN_EMAIL" \

@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye-slim
 
 RUN apt update && apt install -y mariadb-server
 
@@ -10,7 +10,7 @@ COPY ./script/setup .
 
 RUN chmod 777 setup
 
-RUN service mysql start && ./setup
+RUN service mariadb start && ./setup
 
 CMD ["mysqld"]
 

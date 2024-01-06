@@ -26,7 +26,16 @@ services:
     volumes:
       - wp:/var/www/wordpress
       - ./requirements/wordpress/config/php-fpm.conf:/etc/php81/php-fpm.d/www.conf
-      - ./requirements/wordpress/config/wp-config.php:/var/www/wordpress/wp-config.php
+    environment:
+      URL: ${WP_URL}
+      TITLE: ${WP_TITLE}
+      ADMIN_USER: ${WP_ADMIN_USER}
+      ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${WP_DB_HOST}
     restart: unless-stopped
 # -------------------------- mariadb --------------------------- #
   db:
