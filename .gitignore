@@ -1,3 +1,4 @@
 .dockerignore
-srcs/.env
+.gitignore
+./srcs/.env
 .git
