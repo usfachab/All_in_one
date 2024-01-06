@@ -16,7 +16,7 @@ CMD ["mysqld"]
 
 # FROM alpine:3.18.5
 
-# RUN apk --update add mariadb mariadb-common mariadb-client openrc
+# RUN apk --update add mariadb mariadb-client openrc
 
 # RUN openrc && touch /run/openrc/softlevel
 
@@ -24,17 +24,20 @@ CMD ["mysqld"]
 
 # RUN chown -R mysql:mysql /var/lib/mysql
 
+
 # RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf
 # RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
 
-# RUN mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+# # ARG MYSQL_DATABASE MYSQL_USER MYSQL_PASSWORD MYSQL_ROOT_PASSWORD
 
 # RUN /etc/init.d/mariadb setup
 
-# COPY ./conf/script .
+# COPY ./script/setup .
 
-# RUN chmod 777 script
+# RUN chmod 777 setup
 
-# RUN rc-service mariadb start && ./script
+# # RUN rc-service mariadb start
 
-# CMD [ "mariadbd", "--user=root" ]
+# ENTRYPOINT [ "/bin/sh", "./setup" ]
+
+# CMD [ "mariadbd"]
