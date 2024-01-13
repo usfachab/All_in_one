@@ -14,11 +14,14 @@ services:
     volumes:
       - wp:/var/www/wordpress
       - ./requirements/nginx/config/server.conf:/etc/nginx/http.d/default.conf
+    env_file:
+      - .env
     restart: unless-stopped
 # -------------------------- wordpress -------------------------- #
   web:
     depends_on:
       - db
+      - redis
     build: ./requirements/wordpress/
     container_name: wordpress
     networks:
@@ -26,31 +29,51 @@ services:
     volumes:
       - wp:/var/www/wordpress
       - ./requirements/wordpress/config/php-fpm.conf:/etc/php81/php-fpm.d/www.conf
-    environment:
-      URL: ${WP_URL}
-      TITLE: ${WP_TITLE}
-      ADMIN_USER: ${WP_ADMIN_USER}
-      ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
-      ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${WP_DB_HOST}
+    env_file:
+      - .env
     restart: unless-stopped
 # -------------------------- mariadb --------------------------- #
   db:
     build:
       context: ./requirements/mariadb/
       args:
-        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-        MYSQL_DATABASE: ${DB_NAME}
-        MYSQL_USER: ${DB_USER}
-        MYSQL_PASSWORD: ${DB_PASSWORD}
+        - DB_NAME=${DB_NAME}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     container_name: mariadb
     networks:
       - inception
     volumes:
       - database:/var/lib/mysql
+    env_file:
+      - .env
+    expose:
+      - 3306
+    restart: unless-stopped
+# ----------------------------  redis -------------------------- #
+  redis:
+    build: ./requirements/redis
+    container_name: redis
+    networks:
+      - inception
+    expose:
+      - 6379
+    restart: unless-stopped
+# ----------------------------  FTP -------------------------- #
+  ftp_server:
+    build:
+      context: ./requirements/ftp
+      args:
+        FTP_ADMIN_PASSWD: ${FTP_ADMIN_PASSWD}
+        FTP_USER_PASSWD: ${FTP_USER_PASSWD}
+    container_name: ftp_server
+    ports:
+      - 20:20
+      - 21:21
+      - 5000-10000:5000-10000
+    networks:
+      - inception
     restart: unless-stopped
 # ----------------------- shared network ----------------------- #
 networks:
@@ -60,3 +83,13 @@ networks:
 volumes:
   wp:
   database:
+    # driver: local
+    # driver_opts:
+    #   o: bind
+    #   type: none
+    #   device: ${HOME}/data/wordpress
+    # driver: local
+    # driver_opts:
+    #   o: bind
+    #   type: none
+    #   device: ${HOME}/data/mariadb

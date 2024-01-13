@@ -2,7 +2,31 @@
 
 set -e
 
-echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;" | mysql
-echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" | mysql
-echo "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';" | mysql
-echo "FLUSH PRIVILEGES;" | mysql
+rc-service mariadb start
+
+echo "Set a root password"
+mariadb -u root -p$DB_ROOT_PASSWORD -e "USE mysql; ALTER USER 'root'@'localhost' IDENTIFIED BY '$DB_ROOT_PASSWORD';"
+
+if ! mariadb -u root -p$DB_ROOT_PASSWORD -e "SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME='$DB_NAME'" 2>/dev/null | grep -q 1; then
+    echo "Creating database: $DB_NAME"
+    mariadb -u root -p$DB_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;"
+else
+    echo "Database $DB_NAME already exists. Skipping creation."
+fi
+
+if ! mariadb -u root -p$DB_ROOT_PASSWORD -e "SELECT 1 FROM mysql.user WHERE user='$DB_USER'" 2>/dev/null | grep -q 1; then
+    echo "Creating user: $DB_USER"
+    mariadb -u root -p$DB_ROOT_PASSWORD -e "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';"
+else
+    echo "User $DB_USER already exists. Skipping creation."
+fi
+
+echo "Granting privileges on $DB_NAME to $DB_USER"
+mariadb -u root -p$DB_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%';"
+mariadb -u root -p$DB_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+
+sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
+
+rc-service mariadb stop
+
+exec $@

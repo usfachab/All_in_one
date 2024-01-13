@@ -1,43 +1,47 @@
-FROM debian:bullseye-slim
+FROM alpine:3.18.5
 
-RUN apt update && apt install -y mariadb-server
+ARG ARG DB_NAME DB_USER DB_PASSWORD DB_ROOT_PASSWORD
 
-RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" ./etc/mysql/mariadb.conf.d/50-server.cnf
+RUN apk --update --no-cache add mariadb mariadb-client openrc \
+	&& rm -rf /var/cache/apk/*; \
+	openrc && touch /run/openrc/softlevel
 
-ARG MYSQL_DATABASE MYSQL_USER MYSQL_PASSWORD MYSQL_ROOT_PASSWORD
+RUN mkdir -p /var/lib/mysql /run/mysqld; chown -R mysql:mysql /var/lib/mysql /run/mysqld
+
+RUN /etc/init.d/mariadb setup
+
+RUN sed -i "s/\bskip-networking\b/port=3306/g" /etc/my.cnf.d/mariadb-server.cnf
 
 COPY ./script/setup .
-
 RUN chmod 777 setup
 
-RUN service mariadb start && ./setup
-
-CMD ["mysqld"]
-
-# FROM alpine:3.18.5
-
-# RUN apk --update add mariadb mariadb-client openrc
-
-# RUN openrc && touch /run/openrc/softlevel
-
-# RUN mkdir -p /var/lib/mysql
-
-# RUN chown -R mysql:mysql /var/lib/mysql
+ENTRYPOINT [ "/bin/sh", "./setup" ]
+CMD [ "mariadbd", "--user=mysql" ]
 
 
-# RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf
-# RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
+# FROM debian:bullseye
 
-# # ARG MYSQL_DATABASE MYSQL_USER MYSQL_PASSWORD MYSQL_ROOT_PASSWORD
-
-# RUN /etc/init.d/mariadb setup
+# RUN apt update && apt install -y mariadb-server && apt autoclean
 
 # COPY ./script/setup .
 
 # RUN chmod 777 setup
 
-# # RUN rc-service mariadb start
+# # RUN service mariadb start
 
-# ENTRYPOINT [ "/bin/sh", "./setup" ]
+# ENTRYPOINT [ "./setup" ]
+# CMD ["mariadbd"]
 
-# CMD [ "mariadbd"]
+# FROM debian:bullseye-slim
+
+# RUN apt update && apt install -y mariadb-server  && apt autoclean
+
+# RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" ./etc/mysql/mariadb.conf.d/50-server.cnf
+
+# COPY ./script/setup .
+
+# RUN chmod 777 setup
+
+# RUN service mariadb start && ./setup
+
+# CMD ["mysqld"]
