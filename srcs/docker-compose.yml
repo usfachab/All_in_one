@@ -5,6 +5,9 @@ services:
   server:
     depends_on:
       - web
+      - db
+      - redis
+      - ftp_server
     build: ./requirements/nginx/
     container_name: nginx
     ports:
@@ -34,13 +37,12 @@ services:
     restart: unless-stopped
 # -------------------------- mariadb --------------------------- #
   db:
-    build:
-      context: ./requirements/mariadb/
-      args:
-        - DB_NAME=${DB_NAME}
-        - DB_USER=${DB_USER}
-        - DB_PASSWORD=${DB_PASSWORD}
-        - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    build: ./requirements/mariadb/
+      # args:
+      #   - DB_NAME=${DB_NAME}
+      #   - DB_USER=${DB_USER}
+      #   - DB_PASSWORD=${DB_PASSWORD}
+      #   - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     container_name: mariadb
     networks:
       - inception
@@ -69,16 +71,25 @@ services:
         FTP_USER_PASSWD: ${FTP_USER_PASSWD}
     container_name: ftp_server
     ports:
-      - 20:20
       - 21:21
-      - 5000-10000:5000-10000
+      - 30000-30019:30000-30019
+    volumes:
+      - wp:/var/www/wordpress
+    networks:
+      - inception
+    restart: unless-stopped
+# ------------------------ Static site ------------------------- #
+  static:
+    build: ./requirements/static
+    container_name: static
+    ports:
+      - 8080:80
     networks:
       - inception
     restart: unless-stopped
 # ----------------------- shared network ----------------------- #
 networks:
   inception:
-    driver: bridge
 
 volumes:
   wp:

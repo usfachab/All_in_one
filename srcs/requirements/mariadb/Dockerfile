@@ -1,6 +1,6 @@
 FROM alpine:3.18.5
 
-ARG ARG DB_NAME DB_USER DB_PASSWORD DB_ROOT_PASSWORD
+# ARG ARG DB_NAME DB_USER DB_PASSWORD DB_ROOT_PASSWORD
 
 RUN apk --update --no-cache add mariadb mariadb-client openrc \
 	&& rm -rf /var/cache/apk/*; \
