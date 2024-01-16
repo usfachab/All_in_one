@@ -1,0 +1,16 @@
+REPOSITORY        TAG       IMAGE ID       CREATED          SIZE
+srcs-ftp_server   latest    0dcced07e5d9   9 minutes ago    15.3MB
+srcs-db           latest    a051421aafd6   11 minutes ago   365MB
+srcs-server       latest    edfc6bfdade6   13 minutes ago   8.81MB
+srcs-web          latest    ee14ba16d873   13 minutes ago   153MB
+srcs-redis        latest    bebe1d81d9d7   13 minutes ago   10.1MB
+srcs-static       latest    679a82e7a101   13 minutes ago   11.4MB
+
+REPOSITORY        TAG       IMAGE ID       CREATED              SIZE
+srcs-ftp_server   latest    b7109837557d   About a minute ago   15.3MB
+srcs-db           latest    e0238828ec01   About a minute ago   365MB
+srcs-server       latest    362f87d079f8   About a minute ago   8.81MB
+srcs-web          latest    b0287f77d324   About a minute ago   153MB
+srcs-redis        latest    edf74d1ae6ae   About a minute ago   9.96MB
+srcs-static       latest    5cbd44d7c953   About a minute ago   11.4MB
+

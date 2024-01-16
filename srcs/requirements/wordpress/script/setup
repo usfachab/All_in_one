@@ -4,9 +4,10 @@ set -e
 wp config create --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASSWORD" \
                   --dbhost="$WP_DB_HOST" --dbprefix=wp_ --force
 
-
 wp core install --url="$WP_URL" --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" \
                 --admin_password="$WP_ADMIN_PASSWORD" --admin_email="$WP_ADMIN_EMAIL" --skip-email
+
+wp plugin install redis-cache --activate
 
 wp config set WP_REDIS_HOST 	"redis"
 wp config set WP_REDIS_PORT 	"6379"
@@ -15,19 +16,15 @@ wp config set FS_METHOD			"direct"
 wp config set FTP_BASE			"/var/www/wordpress"
 wp config set FTP_CONTENT_DIR	"/var/www/wordpress/wp-content/"
 wp config set FTP_PLUGIN_DIR	"/var/www/wordpress/wp-content/plugins/"
-wp config set FTP_USER			"$FTP_USERNAME"
+wp config set FTP_USER			"$WP_FTP_USERNAME"
 wp config set FTP_PASS			"$FTP_ADMIN_PASSWD"
 wp config set FTP_HOST			"$FTP_SERVER_DOMAIN"
 wp config set FTP_SSL			"false"
-# wp config set FTP_PUBKEY		"/etc/ssh/ftp-dsa.pem"
-# wp config set FTP_PRIKEY		"/etc/ssh/ftp-dsa.pem"
 
-wp plugin install redis-cache --activate
-
-if ! wp user get regular --field=user_login 2> /dev/null; then
-    wp user create regular regular@example.com --role=author --user_pass="regular" --display_name="Regular user"
+if ! wp user get $REGULAR_USER --field=user_login 2> /dev/null; then
+    wp user create $REGULAR_USER $REGULAR_USER@example.com --role=author --user_pass="$REGULAR_USER" --display_name="$REGULAR_USER user"
 else
-    echo "User 'regular' already exists."
+    echo "User '$REGULAR_USER' already exists."
 fi
 
 curl -OL "https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-en.php"
