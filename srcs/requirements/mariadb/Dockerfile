@@ -28,6 +28,8 @@ RUN apk --update --no-cache add mariadb mariadb-client openrc \
 	&& /etc/init.d/mariadb setup \
     && sed -i "s/\bskip-networking\b/port=3306/g" /etc/my.cnf.d/mariadb-server.cnf
 
+# USER mysql
+
 COPY ./script/setup /setup
 RUN chmod +x /setup
 
