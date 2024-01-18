@@ -8,5 +8,6 @@ RUN apk --update --no-cache add nginx; \
 	mkdir ssl/
 
 COPY ssl/* ssl/
+COPY config/server.conf /etc/nginx/http.d/
 
-CMD [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

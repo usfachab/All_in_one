@@ -1,34 +1,12 @@
-# FROM alpine:3.18.5
-
-# # ARG ARG DB_NAME DB_USER DB_PASSWORD DB_ROOT_PASSWORD
-
-# RUN apk --update --no-cache add mariadb mariadb-client openrc \
-# 	&& rm -rf /var/cache/apk/*; \
-# 	openrc && touch /run/openrc/softlevel
-
-# RUN mkdir -p /var/lib/mysql /run/mysqld; chown -R mysql:mysql /var/lib/mysql /run/mysqld
-
-# RUN /etc/init.d/mariadb setup
-
-# RUN sed -i "s/\bskip-networking\b/port=3306/g" /etc/my.cnf.d/mariadb-server.cnf
-
-# COPY ./script/setup .
-# RUN chmod 777 setup
-
-# ENTRYPOINT [ "/bin/sh", "./setup" ]
-# CMD [ "mariadbd", "--user=mysql" ]
-
 FROM alpine:3.18.5
 
-RUN apk --update --no-cache add mariadb mariadb-client openrc \
-    && mkdir -p /var/lib/mysql /run/mysqld \
+RUN apk --update --no-cache add mariadb mariadb-client openrc && rm -rf /var/cache/apk/*
+
+RUN mkdir -p /var/lib/mysql /run/mysqld \
     && chown -R mysql:mysql /var/lib/mysql /run/mysqld \
-    && rm -rf /var/cache/apk/* \
 	&& openrc && touch /run/openrc/softlevel \
 	&& /etc/init.d/mariadb setup \
     && sed -i "s/\bskip-networking\b/port=3306/g" /etc/my.cnf.d/mariadb-server.cnf
-
-# USER mysql
 
 COPY ./script/setup /setup
 RUN chmod +x /setup

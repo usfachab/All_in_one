@@ -10,8 +10,7 @@ RUN apk --update --upgrade --no-cache add vsftpd openrc; rm -rf /var/cache/apk/*
 	passwd -d ftpuser ${FTP_USER_PASSWD}; \
 	chown -R admin:admin /var/www/wordpress
 
-
 COPY config/vsftpd.conf /etc/vsftpd.conf
 COPY config/vsftpd.chroot_list /etc/vsftpd/vsftpd.chroot_list
 
-CMD [ "vsftpd" ]
+ENTRYPOINT [ "vsftpd" ]

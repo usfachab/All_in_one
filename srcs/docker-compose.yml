@@ -11,7 +11,9 @@ services:
       - inception
     volumes:
       - wp:/var/www/wordpress
-      - ./requirements/nginx/config/server.conf:/etc/nginx/http.d/default.conf
+      - ./requirements/nginx/ssl/server.crt:/etc/nginx/ssl/server.crt
+      - ./requirements/nginx/ssl/server.key:/etc/nginx/ssl/server.key
+      # - ./requirements/nginx/config/server.conf:/etc/nginx/http.d/default.conf
     env_file:
       - .env
     restart: unless-stopped
@@ -90,8 +92,16 @@ services:
       - "./requirements/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml"
     networks:
       - inception
-    expose:
+    ports:
       - 9090:9090
+# ----------------------- Adminer ----------------------- #
+  adminer:
+    build: ./requirements/adminer
+    container_name: adminer
+    networks:
+      - inception
+    ports:
+      - 3000:3000
 # ----------------------- shared network ----------------------- #
 networks:
   inception:

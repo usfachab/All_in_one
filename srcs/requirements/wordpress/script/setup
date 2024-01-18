@@ -27,10 +27,6 @@ else
     echo "User '$REGULAR_USER' already exists."
 fi
 
-curl -OL "https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1-en.php"
-
-mv adminer-4.8.1-en.php /var/www/wordpress/adm.php
-
 find /var/www/ -type d -exec chmod 755 {} \;
 find /var/www/ -type f -exec chmod 644 {} \;
 chown -R www:www /var/www/
