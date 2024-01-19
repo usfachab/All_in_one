@@ -86,14 +86,15 @@ services:
       - inception
     restart: unless-stopped
 # ------------------------ Prometheus ------------------------- #
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - "./requirements/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml"
+  locust:
+    build: ./requirements/locust/
+    container_name: locust
     networks:
       - inception
+    volumes:
+      - ./requirements/locust/src/locustfile.py:/mnt/locust/locustfile.py
     ports:
-      - 9090:9090
+      - 8089:8089
 # ----------------------- Adminer ----------------------- #
   adminer:
     build: ./requirements/adminer
