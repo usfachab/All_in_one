@@ -13,7 +13,6 @@ services:
       - wp:/var/www/wordpress
       - ./requirements/nginx/ssl/server.crt:/etc/nginx/ssl/server.crt
       - ./requirements/nginx/ssl/server.key:/etc/nginx/ssl/server.key
-      # - ./requirements/nginx/config/server.conf:/etc/nginx/http.d/default.conf
     env_file:
       - .env
     restart: unless-stopped
@@ -40,14 +39,18 @@ services:
       - ftp_server
 # -------------------------- mariadb --------------------------- #
   db:
-    build: ./requirements/mariadb/
+    build:
+      context: ./requirements/mariadb/
+      args:
+        DB_NAME: ${DB_NAME}
+        DB_USER: ${DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD}
+        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     container_name: mariadb
     networks:
       - inception
     volumes:
       - database:/var/lib/mysql
-    env_file:
-      - .env
     expose:
       - 3306
     restart: unless-stopped
@@ -66,7 +69,8 @@ services:
       context: ./requirements/ftp
       args:
         FTP_ADMIN_PASSWD: ${FTP_ADMIN_PASSWD}
-        FTP_USER_PASSWD: ${FTP_USER_PASSWD}
+        FTP_USER_PASSWD:  ${FTP_USER_PASSWD}
+        HOST_IP_ADDRESS:  ${HOST_IP_ADDRESS}
     container_name: ftp_server
     ports:
       - 21:21
@@ -95,6 +99,7 @@ services:
       - ./requirements/locust/src/locustfile.py:/mnt/locust/locustfile.py
     ports:
       - 8089:8089
+    restart: unless-stopped
 # ----------------------- Adminer ----------------------- #
   adminer:
     build: ./requirements/adminer
@@ -103,6 +108,7 @@ services:
       - inception
     ports:
       - 3000:3000
+    restart: unless-stopped
 # ----------------------- shared network ----------------------- #
 networks:
   inception:
