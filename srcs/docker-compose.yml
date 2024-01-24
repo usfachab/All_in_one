@@ -2,7 +2,7 @@ version: '3'
 
 services:
 # ---------------------------- nginx ---------------------------- #
-  server:
+  nginx:
     build: ./requirements/nginx/
     container_name: nginx
     ports:
@@ -13,16 +13,12 @@ services:
       - wp:/var/www/wordpress
       - ./requirements/nginx/ssl/server.crt:/etc/nginx/ssl/server.crt
       - ./requirements/nginx/ssl/server.key:/etc/nginx/ssl/server.key
-    env_file:
-      - .env
     restart: unless-stopped
     depends_on:
-      - db
-      - web
-      - redis
-      - ftp_server
+      - mariadb
+      - wordpress
 # -------------------------- wordpress -------------------------- #
-  web:
+  wordpress:
     build: ./requirements/wordpress/
     container_name: wordpress
     networks:
@@ -33,12 +29,14 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    expose:
+      - 9000
     depends_on:
-      - db
+      - mariadb
       - redis
       - ftp_server
 # -------------------------- mariadb --------------------------- #
-  db:
+  mariadb:
     build:
       context: ./requirements/mariadb/
       args:
@@ -115,14 +113,12 @@ networks:
 
 volumes:
   wp:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${HOME}/data/wordpress
   database:
-    # driver: local
-    # driver_opts:
-    #   o: bind
-    #   type: none
-    #   device: ${HOME}/data/wordpress
-    # driver: local
-    # driver_opts:
-    #   o: bind
-    #   type: none
-    #   device: ${HOME}/data/mariadb
+    driver_opts:
+      o: bind
+      type: none
+      device: ${HOME}/data/mariadb

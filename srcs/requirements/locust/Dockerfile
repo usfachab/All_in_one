@@ -8,6 +8,4 @@ RUN pip3 install -U --pre locust
 
 RUN mkdir -p /mnt/locust/
 
-# ADD src/locustfile.py /mnt/locust/
-
 CMD locust -f /mnt/locust/locustfile.py

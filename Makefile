@@ -5,7 +5,7 @@ DCF		=	./srcs/docker-compose.yml
 .PHONY: build up start down destroy stop restart logs ps fclean
 
 up:
-# @mkdir -p $(HOME)/data/wordpress && mkdir -p $(HOME)/data/mariadb
+	@mkdir -p $(HOME)/data/wordpress && mkdir -p $(HOME)/data/mariadb
 	@$(DC) -f $(DCF) up -d
 
 build:
@@ -36,7 +36,7 @@ ps:
 	@$(DC) -f $(DCF) ps
 
 fclean: destroy
-# @sudo rm -fr $(HOME)/data
+	@sudo rm -fr $(HOME)/data
 	docker system prune -af
 
 
