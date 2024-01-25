@@ -22,6 +22,8 @@ down:
 	@$(DC) -f $(DCF) down
 
 destroy: down
+	@echo "remove: wordpress, mariadb"
+	@sudo rm -fr $(HOME)/data/wordpress; sudo rm -fr $(HOME)/data/mariadb
 	@$(DC) -f $(DCF) down -v
 
 stop:
@@ -36,7 +38,7 @@ ps:
 	@$(DC) -f $(DCF) ps
 
 fclean: destroy
-	@sudo rm -fr $(HOME)/data
+	sudo rm -fr $(HOME)/data
 	docker system prune -af
 
 

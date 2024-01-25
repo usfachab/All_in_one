@@ -25,7 +25,6 @@ services:
       - inception
     volumes:
       - wp:/var/www/wordpress
-      - ./requirements/wordpress/config/php-fpm.conf:/etc/php81/php-fpm.d/www.conf
     env_file:
       - .env
     restart: unless-stopped
@@ -87,7 +86,7 @@ services:
     networks:
       - inception
     restart: unless-stopped
-# ------------------------ Prometheus ------------------------- #
+# --------------------------- locust ------------------------- #
   locust:
     build: ./requirements/locust/
     container_name: locust
@@ -98,7 +97,7 @@ services:
     ports:
       - 8089:8089
     restart: unless-stopped
-# ----------------------- Adminer ----------------------- #
+# ------------------------- Adminer ------------------------- #
   adminer:
     build: ./requirements/adminer
     container_name: adminer

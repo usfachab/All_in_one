@@ -12,8 +12,10 @@ RUN curl -OL "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-c
 
 RUN wp core download --path=/var/www/wordpress
 
-COPY ./script/setup /tmp
-RUN chmod +x /tmp/setup
+COPY script/setup /usr/local/bin/wp_setup
+COPY config/php-fpm.conf /etc/php81/php-fpm.d/www.conf
 
-ENTRYPOINT [ "/bin/sh", "/tmp/setup" ]
+RUN chmod +x /usr/local/bin/wp_setup
+
+ENTRYPOINT [ "/bin/sh", "/usr/local/bin/wp_setup" ]
 CMD ["/usr/sbin/php-fpm81", "--nodaemonize"]
